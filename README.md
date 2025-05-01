@@ -1,3 +1,9 @@
+<div style="text-align: left;">
+  <h2 style="background-color: #2C3E3D; color: white; padding: 10px 20px; margin-bottom: 20px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 30px">Penjelasan Syntax</h2>
+</div>
+
+---
+
 <div style='text-align: justify'>
 
 ```sql
