@@ -1,5 +1,5 @@
 <div style="text-align: left;">
-  <h2 style="background-color: #2C3E3D; color: white; padding: 10px 20px; margin-bottom: 20px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 30px">Penjelasan Syntax</h2>
+  <h2 style="background-color: #2C3E3D; color: white; padding: 10px 20px; margin-bottom: 20px; font-weight: bold; display: inline-block; font-size: 30px">SQL Process</h2>
 </div>
 
 ---
@@ -49,33 +49,33 @@ ORDER BY year_month, rank;
 
 
 <div style="text-align: left;">
-  <h2 style="background-color: #2C3E3D; color: white; padding: 10px 20px; margin-bottom: 20px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 30px">Penjelasan Syntax</h2>
+  <h2 style="background-color: #2C3E3D; color: white; padding: 10px 20px; margin-bottom: 20px; font-weight: bold; display: inline-block; font-size: 30px">Explanation</h2>
 </div>
 
 ---
 
 <div style='text-align: justify'>
 
-<strong>Bagian I. Membuat tabel sementara untuk agregasi penjualan produk per bulan</strong>
+<strong>Bagian I. Agregasi penjualan produk per bulan</strong>
 
-- `WITH report_monthly_orders_product_agg AS (...)` — membuat tabel sementara (Common Table Expression - CTE) yang menyimpan data agregasi penjualan produk per bulan sebelum dilakukan peringkat.
-- `DATE_TRUNC(DATE(o.created_at), MONTH) AS year_month` — mengubah tanggal transaksi `(created_at)` menjadi format bulanan `(YYYY-MM-01)`.
-- `p.id AS product_id, p.name AS product_name, p.brand, p.category` — mengambil informasi unik dari produk.
-- `COUNT(*) AS total_items_sold` — menghitung jumlah produk yang terjual dalam satu bulan.
-- `SUM(o.sale_price) AS total_revenue` — menghitung total pendapatan dari penjualan produk dalam satu bulan.
-- `JOIN dengan tabel products` — menghubungkan order_items dengan products untuk mendapatkan detail produk.
-- `WHERE o.status = 'Complete'` — memastikan hanya transaksi yang sudah selesai yang diambil.
-- `GROUP BY` — mengelompokkan data berdasarkan bulan dan produk untuk agregasi total penjualan.
+- `WITH report_monthly_orders_product_agg AS (...)` membuat tabel sementara (CTE) untuk menghitung total penjualan produk tiap bulan.
+- `DATE_TRUNC(DATE(o.created_at), MONTH) AS year_month` digunakan untuk mengelompokkan transaksi berdasarkan bulan.
+- `p.id AS product_id, p.name AS product_name, p.brand, p.category` mengambil informasi unik dari produk.
+- `COUNT(*) AS total_items_sold` menghitung total unit yang terjual dalam bulan tersebut.
+- `SUM(o.sale_price) AS total_revenue` menjumlahkan total pendapatan dari penjualan produk.
+- JOIN dilakukan antara tabel `order_items` dan `products` agar bisa mengakses detail produk.
+- Hanya transaksi berstatus `WHERE o.status = 'Complete'` yang diikutkan dalam perhitungan.
+- `GROUP BY` digunakan untuk agregasi data berdasarkan bulan dan produk.
 
-<strong>Bagian II. Membuat peringkat produk berdasarkan total revenue tiap bulan</strong>
+<strong>Bagian II. Peringkat produk berdasarkan revenue</strong>
 
-- `RANK() OVER (...) AS rank` — memberikan peringkat (rank) kepada setiap produk.
-- `PARTITION BY year_month` — peringkat diberikan dalam lingkup setiap bulan.
-- `ORDER BY total_revenue DESC` — mengurutkan pendapatan produk dari tertinggi ke terendah.
+- `RANK() OVER (...) AS rank` memberi peringkat produk tiap bulan berdasarkan total pendapatan.
+- `PARTITION BY year_month` memastikan peringkat dihitung secara terpisah untuk setiap bulan.
+- `ORDER BY total_revenue DESC` mengurutkan produk berdasarkan pendapatan tertinggi.
 
-<strong>Bagian III. Menampilkan 5 produk setiap bulan berdasarkan total revenue (penjualan tertinggi)</strong>
+<strong>Bagian III. Menampilkan top 5 produk tiap bulan</strong>
 
-- `WHERE rank <= 5` — hanya mengambil 5 produk dengan revenue tertinggi setiap bulan.
-- `ORDER BY year_month, rank` — mengurutkan hasil berdasarkan bulan dan peringkat produk dalam bulan tersebut.
+- `WHERE rank <= 5` menyaring hanya produk-produk dengan peringkat 1 sampai 5.
+- `ORDER BY year_month, rank` mengurutkan hasil berdasarkan bulan dan posisi peringkat.
 
 </div>
